@@ -22,7 +22,7 @@
 #define BASE64_NEON64_USE_ASM
 #endif
 
-static inline uint8x16x4_t
+static BASE64_FORCE_INLINE uint8x16x4_t
 load_64byte_table (const uint8_t *p)
 {
 #ifdef BASE64_NEON64_USE_ASM
@@ -72,7 +72,8 @@ load_64byte_table (const uint8_t *p)
 // (48 bytes encode, 64 bytes decode) that we inline the
 // uint64 codec to stay performant on smaller inputs.
 
-BASE64_ENC_FUNCTION(neon64)
+void
+base64_stream_encode_neon64 BASE64_ENC_PARAMS
 {
 #ifdef BASE64_USE_NEON64
 	#include "../generic/enc_head.c"
@@ -80,11 +81,12 @@ BASE64_ENC_FUNCTION(neon64)
 	enc_loop_generic_64(&s, &slen, &o, &olen);
 	#include "../generic/enc_tail.c"
 #else
-	BASE64_ENC_STUB
+	base64_enc_stub(state, src, srclen, out, outlen);
 #endif
 }
 
-BASE64_DEC_FUNCTION(neon64)
+int
+base64_stream_decode_neon64 BASE64_DEC_PARAMS
 {
 #ifdef BASE64_USE_NEON64
 	#include "../generic/dec_head.c"
@@ -92,6 +94,6 @@ BASE64_DEC_FUNCTION(neon64)
 	dec_loop_generic_32(&s, &slen, &o, &olen);
 	#include "../generic/dec_tail.c"
 #else
-	BASE64_DEC_STUB
+	return base64_dec_stub(state, src, srclen, out, outlen);
 #endif
 }
