@@ -62,6 +62,8 @@ jobs:
             platform: "arm64"
           - runner: "ubuntu-22.04-arm"
             platform: "aarch64"
+          - runner: "windows-11-arm"
+            platform: "ARM64"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
